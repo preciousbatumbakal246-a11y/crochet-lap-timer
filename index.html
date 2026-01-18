@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Yarn Time Lap Timer</title>
+
+<style>
+  body {
+    font-family: "Trebuchet MS", Arial, sans-serif;
+    text-align: center;
+    background: linear-gradient(135deg, #fdf6ec, #f8e1c8);
+    color: #5a3e2b;
+  }
+
+  .timer {
+    font-size: 3em;
+    margin: 20px;
+    background: #fff6ed;
+    padding: 15px 25px;
+    border-radius: 18px;
+  }
+
+  button {
+    margin: 6px;
+    padding: 10px 18px;
+    border-radius: 20px;
+    border: none;
+    background: #d89c60;
+    color: white;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+
+<h2>🧶 Stitch by Stitch Timer</h2>
+<div class="timer" id="display">00:00:00</div>
+
+<button onclick="start()">Start</button>
+<button onclick="stop()">Pause</button>
+<button onclick="lap()">Lap</button>
+<button onclick="reset()">Reset</button>
+
+<ul id="laps"></ul>
+
+<script>
+let startTime = 0, elapsedTime = 0, timerInterval, lapCount = 0;
+
+function timeToString(time) {
+  let ms = Math.floor((time % 1000) / 10);
+  let sec = Math.floor((time / 1000) % 60);
+  let min = Math.floor((time / 60000) % 60);
+  return `${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}:${String(ms).padStart(2,'0')}`;
+}
+
+function start() {
+  if (timerInterval) return;
+  startTime = Date.now() - elapsedTime;
+  timerInterval = setInterval(() => {
+    elapsedTime = Date.now() - startTime;
+    display.textContent = timeToString(elapsedTime);
+  }, 10);
+}
+
+function stop() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function reset() {
+  stop();
+  elapsedTime = lapCount = 0;
+  display.textContent = "00:00:00";
+  laps.innerHTML = "";
+}
+
+function lap() {
+  if (!timerInterval) return;
+  lapCount++;
+  const li = document.createElement("li");
+  li.textContent = `Row ${lapCount}: ${timeToString(elapsedTime)}`;
+  laps.appendChild(li);
+}
+</script>
+
+</body>
+</html>
